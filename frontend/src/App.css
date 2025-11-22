@@ -1,0 +1,51 @@
+.App{
+  display:grid;
+  grid-template-rows: auto auto;
+}
+
+h1{
+  text-align: center;
+}
+
+h2{
+  text-align: center;
+}
+
+#header{
+  display: block;
+  text-align: center;
+  align-items: center;
+}
+
+#image{
+  justify-content: center;
+  align-items: center;
+}
+
+.quoteDisplay{
+  background-color: gray;
+  display: grid;
+  grid-template-columns: auto auto;
+  padding: 10px;
+}
+
+.quoteGetDisplay{
+ background-color: lightgray;
+ display: grid;
+ grid-template-rows: auto auto;
+}
+
+#submitQuotes{
+  display: grid;
+  grid-template-rows: auto auto;
+}
+
+#postForm{
+  align-items: center;
+}
+
+#formElement{
+  justify-content: center;
+  text-align: center;
+  padding: 2%;
+}
