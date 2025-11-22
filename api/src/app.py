@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 from typing import AsyncIterator
 
 from fastapi import FastAPI, Form, status
@@ -48,65 +49,41 @@ def post_message(name: str = Form(), message: str = Form()) -> RedirectResponse:
 
 
 # TODO: add another API route with a query parameter to retrieve quotes based on max age
-@app.get("/quote/{time}")
+@app.get("/quote/{times}")
 def get_quotes(times: str) -> list[Quote]:
+    print("getting")
     response = list()
     now = datetime.now()
     begin = 0
     end = len(database["quotes"])
-    pointer = len(database["quotes"])/2
+    pointer = len(database["quotes"])//2
 
-    if time == "Last Week":
+    if times == "Last Week":
         now -= timedelta(days = 7)
-        while begin < end :
-            if database["quotes"][pointer].time < now:
-                end = pointer
-                pointer = (begin + end)/2
-            elif database["quotes"][pointer].time > now:
-                begin = pointer
-                pointer = (begin + end)/2
-            else:
-                break
-        if database["quotes"][pointer].time > now:
-            pointer += 1
-        while pointer < len(database["quotes"]):
-            response.append(database["quotes"][pointer])
-            pointer += 1
 
-    elif time == "Last Month":
-        now -= timedelta(months = 1)
-        while begin < end :
-            if database["quotes"][pointer].time < now:
-                end = pointer
-                pointer = (begin + end)/2
-            elif database["quotes"][pointer].time > now:
-                begin = pointer
-                pointer = (begin + end)/2
-            else:
-                break
-        if database["quotes"][pointer].time > now:
-            pointer += 1
-        while pointer < len(database["quotes"]):
-            response.append(database["quotes"][pointer])
-            pointer += 1
-    elif time == "Last Year":
-        now -= timedelta(years = 1)
-        while begin < end :
-            if database["quotes"][pointer].time < now:
-                end = pointer
-                pointer = (begin + end)/2
-            elif database["quotes"][pointer].time > now:
-                begin = pointer
-                pointer = (begin + end)/2
-            else:
-                break
-        if database["quotes"][pointer].time > now:
-            pointer += 1
-        while pointer < len(database["quotes"]):
-            response.append(database["quotes"][pointer])
-            pointer += 1
+    elif times == "Last Month":
+        now -= relativedelta(months = 1)
+
+    elif times == "Last Year":
+        now -= relativedelta(years = 1)
     else:
         for quote in database["quotes"]:
             response.append(quote)
+            begin = end + 1
+
+    while begin < end :
+        if datetime.fromisoformat(database["quotes"][pointer]["time"]) > now:
+            end = pointer - 1
+            pointer = (begin + end)//2
+        elif datetime.fromisoformat(database["quotes"][pointer]["time"]) < now:
+            begin = pointer + 1
+            pointer = (begin + end)//2
+        else:
+            break
+    if datetime.fromisoformat(database["quotes"][pointer]["time"]) > now:
+        pointer += 1
+    while pointer < len(database["quotes"]):
+        response.append(database["quotes"][pointer])
+        pointer += 1
 
     return response

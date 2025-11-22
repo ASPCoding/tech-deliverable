@@ -4,26 +4,49 @@ import { useState } from "react";
 
 function App() {
 	const [time, setTime] = useState("Last Week");
+	const [quotes, setQuotes] = useState([{}]);
 
 	function handleChange(e){
 		console.log(e.target.value);
 		setTime(e.target.value);
 	}
 	
-	async function fetchQuotes(time){
-		const response = await fetch(`http://localhost:5173/api/quote/Last Week`);
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
+	async function fetchQuotes(){
+		console.log("hi");
+		const response = await fetch(`http://localhost:5173/api/quote/${time}`);
 		const data = await response.json();
-		console.log(data);
+		
+		return data
 	}
 
 	function handleSubmit(e){
 		e.preventDefault();
-		fetchQuotes(time);
+		fetchQuotes().then(
+			data => {console.log(data);	
+				setQuotes(data);
+				});
+		console.log(quotes);
 	}
 
+	function getQuotes(){
+		return (
+				<div id="allQuotes">
+          {quotes.map((item) => (
+						<div>
+							<div id="quote">
+							{item["time"]}
+							</div>
+							<div>
+							{item["name"]}
+							</div>
+							<div>
+							{item["message"]}
+							</div>
+							<div id="spacer"/>
+						</div>
+          ))}
+				</div>)
+	}
 
 	return (
 		<div className="App">
@@ -36,7 +59,9 @@ function App() {
 			<div className="quoteDisplay">
 
 				<div id="submitQuotes">
+					<div id="submitTitle">
 					<h2>Submit a quote</h2>
+					</div>
 					{/* TODO: implement custom form submission logic to not refresh the page */}
 					
 					<div id="postForm">
@@ -71,9 +96,7 @@ function App() {
 
 					</form>
 					<div className="messages">
-						<p>Peter Anteater</p>
-						<p>Zot Zot Zot!</p>
-						<p>Every day</p>
+						{getQuotes()}
 					</div>
 				</div>
 			</div>

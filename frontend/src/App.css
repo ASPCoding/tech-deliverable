@@ -25,27 +25,34 @@ h2{
 .quoteDisplay{
   background-color: gray;
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: 50% 50%;
   padding: 10px;
+}
+
+#submitTitle{
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: fit-content;
 }
 
 .quoteGetDisplay{
  background-color: lightgray;
- display: grid;
- grid-template-rows: auto auto;
-}
-
-#submitQuotes{
-  display: grid;
-  grid-template-rows: auto auto;
 }
 
 #postForm{
   align-items: center;
+  width: 100%;
 }
 
 #formElement{
   justify-content: center;
   text-align: center;
-  padding: 2%;
+  padding: 1%;
+}
+
+
+
+#spacer{
+  padding: .5%;
 }
